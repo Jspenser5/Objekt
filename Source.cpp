@@ -1,87 +1,44 @@
 #include <iostream>
-#include<vector>
-#include<math.h>
+#include <algorithm>
+#include <string>
+#include<iostream>
+#include <vector>
 using namespace std;
 
-class list {
-private:
-	struct node {
-		node(int val) {
-			value = val;
-		}
-		~node() {
-			cout << value << " was deleted" << endl;
-		}
-		int value;
-		node* next=nullptr;
-	};
-	node* create_node(int val) {
-		node* new_node = new node(val);
-		return new_node;
+bool comp(pair<int, int> a, pair<int, int> b) {
+	return a.second > b.second;
+}
+bool have_nul(vector<bool> v) {
+	for (int i = 0; i < v.size(); i++) {
+		if (v[i] == 0)
+			return 1;
 	}
-	node* head = nullptr;
-	int size = 0;
-public:
-	~list() {
-		clear();
-	}
-	int get_size() {
-		return size;
-	}
-	void add_first(int value) {
-		node* new_first = create_node(value);
-		size++;
-		if (head == nullptr) {
-			head = new_first;
-		}
-		else {
-			new_first->next = head;
-			head = new_first;
-		}
-	}
-	void add_last(int value) {
-		node* new_first = create_node(value);
-		size++;
-		if (head == nullptr) {
-			head = new_first;
-		}
-		else {
-			node* cur = head;
-			while (cur->next != nullptr) {
-				cur = cur->next;
-			}
-			cur->next = new_first;
-		}
-	}
-	int pop_head() {
-		if (head == nullptr) return -1;
-		size--;
-		int x;
-		node* h = head;
-		x = head->value;
-		head = head->next;
-		delete h;
-		return x;
-	}
-	void clear() {
-		if (head == nullptr) return;
-		while (head->next != nullptr) {
-			node* next = head->next;
-			delete head;
-			head = next;
-		}
-		delete head;
-	}
-};
+	return 0;
+}
 int main() {
-	int count;
-	list l;
+	int count_rooms = 0,count;
+	int left, right;
+	vector<pair<int, int>> room;
 	cin >> count;
-	for (int i = 0; i < count; i++) {
-		l.add_last(i);
+	for(int i=0;i<count;i++){
+		cin >> left >> right;
+		room.push_back(make_pair(left, right));
 	}
-	while (l.get_size() > 0) {
-		cout << l.pop_head() << endl;
+	vector<bool> flags(room.size(),0);
+	sort(room.begin(), room.end(), comp);
+	cout << room[0].second << endl;
+	while (have_nul(flags)) {
+		right = 0;
+		for (int i = 0;i<room.size();i++) {
+			if (flags[i] != 1) {
+				if (room[i].first >= right) {
+					flags[i] = 1;
+					right = room[i].second;
+				}
+			}
+		}
+		count_rooms++;
 	}
+	cout << count_rooms << endl;
 	return 0;
 }
