@@ -1,0 +1,90 @@
+real_number_candidate = input()
+cur_pos = 'start'
+flag = 0
+real_number_candidate.lower()
+for symbol in real_number_candidate:
+    #Стартовая позиция
+    if cur_pos == 'start':
+        if symbol == '+' or symbol == '-':
+             cur_pos = 'first sign was read'
+        elif symbol >= '0' and symbol <= '9':
+            cur_pos = 'first_num'
+            flag = 1
+        elif symbol == '.':
+            cur_pos = 'first point was read'
+        else:
+            flag = 0
+            cur_pos = 'error'
+    #Первый символ - знак
+    elif cur_pos == 'first sign was read':
+        if symbol >= '0' and symbol <= '9':
+            flag = 1
+            cur_pos = 'first_num'
+        elif symbol == '.':
+            cur_pos = 'first point was read'
+        else:
+            flag = 0
+            cur_pos = 'error'
+    #Точка была прочитана до появления цифр
+    elif cur_pos == 'first point was read':
+        if symbol >= '0' and symbol <= '9':
+            flag = 1
+            cur_pos = 'int num '
+        else:
+            flag = 0
+            cur_pos = 'error'
+    #До точки прочитана цифра
+    elif cur_pos == 'first_num':
+        if symbol == '.':
+            cur_pos = 'point was read'
+        elif symbol == 'e':
+            flag = 0
+            cur_pos = 'e was read'
+        elif not(symbol >= '0' and symbol <= '9'):
+            flag = 0
+            cur_pos = 'error'
+    #Дальше должны быть прочитаны только цифры или e
+    elif cur_pos == 'int num':
+        if symbol == 'e':
+            flag = 0
+            cur_pos = 'e was read'
+        elif not(symbol >= '0' and symbol <= '9'):
+            flag = 0
+            cur_pos = 'error'
+    #Точка была считана после некоторого числа цифр
+    elif cur_pos == 'point was read':
+        if symbol == 'e':
+            flag = 0
+            cur_pos = 'e was read'
+        elif symbol >= '0' and symbol <= '9':
+            cur_pos = 'int num'
+        else:
+            flag = 0
+            cur_pos = 'error'
+    #Была прочитана e
+    elif cur_pos == 'e was read':
+        if symbol == '+' or symbol == '-':
+             cur_pos = 'sgn after E was read'
+        elif symbol >= '0' and symbol <= '9':
+            flag = 1
+            cur_pos = 'num after E'
+        else:
+            flag = 0
+            cur_pos = 'error'
+    #После e прочитан знак
+    elif cur_pos == 'sgn after E was read':
+        if symbol >= '0' and symbol <= '9':
+            flag = 1
+            cur_pos = 'num after E'
+        else:
+            flag = 0
+            cur_pos = 'error'
+    #После e прочитана цифра
+    elif cur_pos == 'num after E':
+        if not (symbol >= '0' and symbol <= '9'):
+            flag = 0
+            cur_pos = 'error'
+if flag == 0:
+    print('NO')
+else:
+    print('YES')
