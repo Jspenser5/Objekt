@@ -27,6 +27,10 @@ class Complex:
     def __abs__(self) -> float:
         return (self.re * self.re + self.im * self.im)**0.5
 
+    def __truediv__(self, other: 'Complex') -> 'Complex':
+        return Complex((self.re * other.re + self.im * other.im) / abs(other),
+                       (self.im * other.re - self.re * other.im) / abs(other))
+
     def exponential(self) -> str:
         """ Return exponential representation of complex number
         :return: str
@@ -45,6 +49,9 @@ class Complex:
 class PComplex(Complex):
     def __mul__(self, other: 'PComplex') -> 'PComplex':
         return PComplex(self.re * other.re, self.im * other.im)
+
+    def __truediv__(self, other: 'PComplex') -> 'PComplex':
+        return PComplex(self.re / other.re, self.im / other.im)
 
 
 class Trianion(Complex):
@@ -67,6 +74,15 @@ class Trianion(Complex):
                         self.re * other.im + self.im * other.re,
                         self.jm * other.re + self.re * other.jm)
 
+    def __abs__(self: 'Trianion') -> float:
+        return sqrt(self.re * self.re + self.im * self.im + self.jm * self.jm)
+
+    def __truediv__(self, other: 'Trianion') -> 'Trianion':
+        return Trianion((self.re * other.re + self.im * other.im + self.jm * other.jm +
+                            self.im * other.jm + self.jm * other.im) / abs(other),
+                        (-self.re * other.im + self.im * other.re) / abs(other),
+                        (self.jm * other.re - self.re * other.jm) / abs(other))
+
 
 class Bicomplex:
     def __init__(self, first: Complex, second: Complex):
@@ -85,6 +101,9 @@ class Bicomplex:
     def __mul__(self, other: 'Bicomplex') -> 'Bicomplex':
         return Bicomplex(self.first * other.first, self.second * other.second)
 
+    def __truediv__(self, other: 'Bicomplex') -> 'Bicomplex':
+        return Bicomplex(self.first / other.first, self.second / other.second)
+
     def __abs__(self) -> float:
         return sqrt(abs(self.first)**2 + abs(self.second)**2)
 
@@ -101,6 +120,11 @@ class PTrianion(Trianion):
                          self.re * other.im + self.im * other.re,
                          self.jm * other.jm)
 
+    def __truediv__(self, other: 'PTrianion') -> 'PTrianion':
+        return PTrianion((self.re * other.re + self.im * other.im) / sqrt(other.re**2 + other.im**2),
+                         (-self.re * other.im + self.im * other.re) / sqrt(other.re**2 + other.im**2),
+                         self.jm / other.jm)
+
 
 class TotalPTrianion(Trianion):
     def __mul__(self, other: 'TotalPTrianion') -> 'TotalPTrianion':
@@ -108,10 +132,12 @@ class TotalPTrianion(Trianion):
                               self.im * other.im,
                               self.jm * other.jm)
 
+    def __truediv__(self, other: 'TotalPTrianion') -> 'TotalPTrianion':
+        return TotalPTrianion(self.re / other.re,
+                              self.im / other.im,
+                              self.jm / other.jm)
 
 
-a = Complex(1, 2)
-b = Complex(3, 4)
-c = Bicomplex(a, b)
-d = Bicomplex(a, b)
-print(c.exponencial())
+a = Complex(1, 0)
+b = Complex(0, 1)
+print(a / b)
